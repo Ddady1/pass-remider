@@ -11,8 +11,8 @@ def get_last_pass_set(username):
     print(result.stdout)
     clean_date = get_clean_date(result.stdout)
     diff_days = get_dates_diff(clean_date)
-    days_remain = pass_change - int(diff_days)
-    if days_remain <= 14:
+    days_remain = pass_change - diff_days
+    if days_remain <= 14 and days_remain >= 0:
         main_win(days_remain)
     else:
         pass
@@ -54,7 +54,7 @@ def main_win(diff_days):
     window.mainloop()
 
 logged_user = os.getlogin()
-test = 'kosta'
+test = 'keeper'
 last_pass_set = get_last_pass_set(test)
 
 
