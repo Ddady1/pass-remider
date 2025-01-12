@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import tkinter as tk
 import ttkbootstrap as tkb
 import os
@@ -9,7 +9,7 @@ def get_last_pass_set(username):
     result = subprocess.run(['powershell.exe', command], capture_output=True, encoding='cp862')
     print(result.stdout)
     clean_date = get_clean_date(result.stdout)
-
+    get_dates_diff(clean_date)
 
 def get_clean_date(date):
     listed_string = list(date.split(' '))
@@ -17,13 +17,20 @@ def get_clean_date(date):
     print(len(listed_string))
     clean_date = listed_string[2]
     print(clean_date)
-    today = datetime.datetime.today()
-    today = today.strftime("%x")
-    print(today)
+    return clean_date
+
 
     '''delta = clean_date - today
     print(delta.days)'''
 
+
+def get_dates_diff(last_date):
+    last_date = datetime.strptime(last_date, '%m/%d/%Y')
+    print(last_date)
+    today = datetime.today()
+    print(today)
+    diff = today - last_date
+    print(diff.days)
 
 # Create Main Window
 
@@ -35,7 +42,7 @@ window.minsize(600, 400)
 
 logged_user = os.getlogin()
 test = 'dimam'
-last_pass_set = get_last_pass_set(test)
+last_pass_set = get_last_pass_set(logged_user)
 
 
 
