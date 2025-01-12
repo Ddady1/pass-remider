@@ -5,11 +5,18 @@ import os
 import subprocess
 
 def get_last_pass_set(username):
+    pass_change = 90
     command = f'Get-Aduser -identity {username} -Properties * -ErrorAction Stop | fl PasswordLastSet'
     result = subprocess.run(['powershell.exe', command], capture_output=True, encoding='cp862')
     print(result.stdout)
     clean_date = get_clean_date(result.stdout)
-    get_dates_diff(clean_date)
+    diff_days = get_dates_diff(clean_date)
+    days_remain = pass_change - int(diff_days)
+    if days_remain <= 14:
+        main_win(days_remain)
+    else:
+        pass
+
 
 def get_clean_date(date):
     listed_string = list(date.split(' '))
@@ -31,20 +38,25 @@ def get_dates_diff(last_date):
     print(today)
     diff = today - last_date
     print(diff.days)
+    return diff.days
 
-# Create Main Window
+def main_win(diff_days):
 
-window = tkb.Window(themename='sandstone')
-window.title('Password Reminder')
-window.geometry('600x400+150+150')
-window.minsize(600, 400)
-#window.iconbitmap(img)
+    # Create Main Window
+
+    window = tkb.Window(themename='sandstone')
+    window.title('Password Reminder')
+    window.geometry('600x400+150+150')
+    window.minsize(600, 400)
+    #window.iconbitmap(img)
+    message_lbl = tkb.Label(window, text=f'You have left {diff_days}')
+    message_lbl.pack()
+    window.mainloop()
 
 logged_user = os.getlogin()
-test = 'dimam'
-last_pass_set = get_last_pass_set(logged_user)
+test = 'kosta'
+last_pass_set = get_last_pass_set(test)
 
 
 
-if __name__ == '__main__':
-    window.mainloop()
+#if __name__ == '__main__':
