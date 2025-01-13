@@ -56,6 +56,7 @@ def main_win(diff_days, flag):
     window.title('Password Reminder')
     window.geometry('600x400+150+150')
     window.minsize(600, 400)
+    window.resizable(False, False)
     #window.iconbitmap(img)
     if flag:
         window.protocol("WM_DELETE_WINDOW", disable_event)
@@ -68,6 +69,8 @@ def main_win(diff_days, flag):
     message_lbl = tkb.Label(main_label_frame, text=f'\n\n\nYour password will expire in {diff_days} days.'
                                                    f'\n    Please consider changing it!', font=('Helvetica', 18))
     message_lbl.pack()
+    ok_button = tkb.Button(window, text='OK')
+    ok_button.pack(side='right', padx=20, ipadx=50)
 
     window.mainloop()
 
