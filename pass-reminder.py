@@ -12,8 +12,12 @@ def get_last_pass_set(username):
     clean_date = get_clean_date(result.stdout)
     diff_days = get_dates_diff(clean_date)
     days_remain = pass_change - diff_days
+    if days_remain == 1:
+        flag = True
+        main_win(days_remain, flag)
     if days_remain <= 14 and days_remain >= 0:
-        main_win(days_remain)
+        flag = False
+        main_win(days_remain, flag)
     else:
         pass
 
@@ -40,7 +44,10 @@ def get_dates_diff(last_date):
     print(diff.days)
     return diff.days
 
-def main_win(diff_days):
+def disable_event():
+    pass
+
+def main_win(diff_days, flag):
 
     # Create Main Window
 
@@ -51,6 +58,8 @@ def main_win(diff_days):
     #window.iconbitmap(img)
     message_lbl = tkb.Label(window, text=f'You have left {diff_days}')
     message_lbl.pack()
+    if flag:
+        window.protocol("WM_DELETE_WINDOW", disable_event)
     window.mainloop()
 
 
