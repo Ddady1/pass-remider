@@ -3,6 +3,7 @@ import tkinter as tk
 import ttkbootstrap as tkb
 import os
 import subprocess
+from PIL import ImageTk, Image
 
 def get_last_pass_set(username):
     pass_change = 90
@@ -56,10 +57,18 @@ def main_win(diff_days, flag):
     window.geometry('600x400+150+150')
     window.minsize(600, 400)
     #window.iconbitmap(img)
-    message_lbl = tkb.Label(window, text=f'You have left {diff_days}')
-    message_lbl.pack()
     if flag:
         window.protocol("WM_DELETE_WINDOW", disable_event)
+    logo = Image.open('//tad-afula.local/NETLOGON/IL-CAR/logo.jpg')
+    logo = ImageTk.PhotoImage(logo)
+    logo_label = tkb.Label(window, image=logo)
+    logo_label.pack()
+    main_label_frame = tkb.LabelFrame(window, text='Password expiration')
+    main_label_frame.pack(ipadx=80, ipady=40)
+    message_lbl = tkb.Label(main_label_frame, text=f'\n\n\nYour password will expire in {diff_days} days.'
+                                                   f'\n    Please consider changing it!', font=('Helvetica', 18))
+    message_lbl.pack()
+
     window.mainloop()
 
 
