@@ -53,10 +53,8 @@ def main_win(diff_days):
     message_lbl.pack()
     window.mainloop()
 
-logged_user = os.getlogin()
-test = 'keeper'
-last_pass_set = get_last_pass_set(test)
 
-
-
-#if __name__ == '__main__':
+if __name__ == '__main__':
+    logged_user = os.getlogin()
+    test = 'kerenz'
+    last_pass_set = get_last_pass_set(test)
