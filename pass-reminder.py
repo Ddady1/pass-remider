@@ -7,21 +7,32 @@ from PIL import ImageTk, Image
 
 def get_last_pass_set(username):
     pass_change = 90
-    command = f'Get-Aduser -identity {username} -Properties * -ErrorAction Stop | fl PasswordLastSet'
-    result = subprocess.run(['powershell.exe', command], capture_output=True, encoding='cp862')
-    print(result.stdout)
-    clean_date = get_clean_date(result.stdout)
+    command_pass = f'Get-Aduser -identity {username} -Properties * -ErrorAction Stop | fl PasswordLastSet'
+    result_pass = subprocess.run(['powershell.exe', command_pass], capture_output=True, encoding='cp862')
+    print(result_pass.stdout)
+    command_fullname = f'Get-Aduser -identity {username} -ErrorAction stop | fl Name'
+    result_fullname = subprocess.run(['powershell.exe', command_fullname], capture_output=True, encoding='cp862')
+    print(result_fullname.stdout)
+    clean_date = get_clean_date(result_pass.stdout)
+    full_name = get_clean_name(result_fullname.stdout)
     diff_days = get_dates_diff(clean_date)
     days_remain = pass_change - diff_days
     if days_remain == 1:
         flag = True
-        main_win(days_remain, flag)
+        main_win(days_remain, flag, full_name)
     if days_remain <= 14 and days_remain >= 0:
         flag = False
-        main_win(days_remain, flag)
+        main_win(days_remain, flag, full_name)
     else:
         pass
 
+
+def get_clean_name(fullname):
+    listed_string = fullname.rstrip('\n')
+    listed_string = listed_string.split(' ')
+    print(listed_string)
+    clean_name = listed_string[2] + ' ' + listed_string[3]
+    return clean_name
 
 def get_clean_date(date):
     listed_string = list(date.split(' '))
@@ -48,7 +59,7 @@ def get_dates_diff(last_date):
 def disable_event():
     pass
 
-def main_win(diff_days, flag):
+def main_win(diff_days, flag, full_name):
 
     # Create Main Window
 
@@ -57,19 +68,22 @@ def main_win(diff_days, flag):
     window.geometry('600x400+150+150')
     window.minsize(600, 400)
     window.resizable(False, False)
+
+    font_color = 'black'
     #window.iconbitmap(img)
     if flag:
         window.protocol("WM_DELETE_WINDOW", disable_event)
+        font_color = 'red'
     logo = Image.open('//tad-afula.local/NETLOGON/IL-CAR/logo.jpg')
     logo = ImageTk.PhotoImage(logo)
     logo_label = tkb.Label(window, image=logo)
     logo_label.pack()
     main_label_frame = tkb.LabelFrame(window, text='Password expiration')
     main_label_frame.pack(ipadx=80, ipady=40)
-    message_lbl = tkb.Label(main_label_frame, text=f'\n\n\nYour password will expire in {diff_days} days.'
-                                                   f'\n    Please consider changing it!', font=('Helvetica', 18))
+    message_lbl = tkb.Label(main_label_frame, text=f'\n\nHello {full_name}.\nYour password will expire in {diff_days} days.'
+                                                   f'\n    Please consider changing it!', font=('Helvetica', 18), foreground=font_color)
     message_lbl.pack()
-    ok_button = tkb.Button(window, text='OK')
+    ok_button = tkb.Button(window, text='OK', command=window.destroy)
     ok_button.pack(side='right', padx=20, ipadx=50)
 
     window.mainloop()
