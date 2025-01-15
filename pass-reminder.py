@@ -6,7 +6,7 @@ import subprocess
 from PIL import ImageTk, Image
 
 def get_last_pass_set(username):
-    pass_change = 90
+    pass_change = 87
     command_pass = f'Get-Aduser -identity {username} -Properties * -ErrorAction Stop | fl PasswordLastSet'
     result_pass = subprocess.run(['powershell.exe', command_pass], capture_output=True, encoding='cp862')
     print(result_pass.stdout)
@@ -31,7 +31,10 @@ def get_clean_name(fullname):
     listed_string = fullname.rstrip('\n')
     listed_string = listed_string.split(' ')
     print(listed_string)
-    clean_name = listed_string[2] + ' ' + listed_string[3]
+    if len(listed_string) == 4:
+        clean_name = listed_string[2] + ' ' + listed_string[3]
+    else:
+        clean_name = listed_string[2]
     return clean_name
 
 def get_clean_date(date):
@@ -70,9 +73,12 @@ def main_win(diff_days, flag, full_name):
     window.resizable(False, False)
 
     font_color = 'black'
+    okbutton_text = ':-('
+
     #window.iconbitmap(img)
     if flag:
         window.protocol("WM_DELETE_WINDOW", disable_event)
+        window.attributes('-toolwindow', True)
         font_color = 'red'
     logo = Image.open('//tad-afula.local/NETLOGON/IL-CAR/logo.jpg')
     logo = ImageTk.PhotoImage(logo)
@@ -80,16 +86,20 @@ def main_win(diff_days, flag, full_name):
     logo_label.pack()
     main_label_frame = tkb.LabelFrame(window, text='Password expiration')
     main_label_frame.pack(ipadx=80, ipady=40)
-    message_lbl = tkb.Label(main_label_frame, text=f'\n\nHello {full_name}.\nYour password will expire in {diff_days} days.'
+    message_lbl = tkb.Label(main_label_frame, text=f'\n\nHello {full_name}.\nYour password will expire in {diff_days} day(s).'
                                                    f'\n    Please consider changing it!', font=('Helvetica', 18), foreground=font_color)
     message_lbl.pack()
-    ok_button = tkb.Button(window, text='OK', command=window.destroy)
+    if flag:
+        ok_button = tkb.Button(window, text=okbutton_text, state=tkb.DISABLED)
+    else:
+        ok_button = tkb.Button(window, text='OK', command=window.destroy)
     ok_button.pack(side='right', padx=20, ipadx=50)
 
     window.mainloop()
 
 
+
 if __name__ == '__main__':
     logged_user = os.getlogin()
-    test = 'kerenz'
+    test = 'TawfikH'
     last_pass_set = get_last_pass_set(test)
