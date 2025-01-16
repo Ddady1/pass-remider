@@ -6,7 +6,7 @@ import subprocess
 from PIL import ImageTk, Image
 
 def get_last_pass_set(username):
-    pass_change = 87
+    pass_change = 90 ### make sure it's 90
     command_pass = f'Get-Aduser -identity {username} -Properties * -ErrorAction Stop | fl PasswordLastSet'
     result_pass = subprocess.run(['powershell.exe', command_pass], capture_output=True, encoding='cp862')
     print(result_pass.stdout)
@@ -17,7 +17,7 @@ def get_last_pass_set(username):
     full_name = get_clean_name(result_fullname.stdout)
     diff_days = get_dates_diff(clean_date)
     days_remain = pass_change - diff_days
-    if days_remain == 1:
+    if days_remain <= 1:
         flag = True
         main_win(days_remain, flag, full_name)
     if days_remain <= 14 and days_remain >= 0:
