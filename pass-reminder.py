@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import tkinter as tk
 import ttkbootstrap as tkb
 import os
@@ -15,8 +15,8 @@ def get_last_pass_set(username):
     print(result_fullname.stdout)
     clean_date = get_clean_date(result_pass.stdout)
     full_name = get_clean_name(result_fullname.stdout)
-    diff_days = get_dates_diff(clean_date)
-    days_remain = pass_change - diff_days
+    days_remain = get_dates_diff(clean_date)
+    #days_remain = pass_change - diff_days
     if days_remain <= 1:
         flag = True
         main_win(days_remain, flag, full_name)
@@ -55,7 +55,9 @@ def get_dates_diff(last_date):
     print(last_date)
     today = datetime.today()
     print(today)
-    diff = today - last_date
+    print(last_date + timedelta(90))
+    #diff = today - last_date
+    diff = (last_date + timedelta(90)) - today
     print(diff.days)
     return diff.days
 
@@ -101,5 +103,5 @@ def main_win(diff_days, flag, full_name):
 
 if __name__ == '__main__':
     logged_user = os.getlogin()
-    test = 'TawfikH'
+    test = 'guye'
     last_pass_set = get_last_pass_set(test)
