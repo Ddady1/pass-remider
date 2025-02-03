@@ -17,6 +17,7 @@ def get_last_pass_set(username):
     full_name = get_clean_name(result_fullname.stdout)
     days_remain = get_dates_diff(clean_date)
     #days_remain = pass_change - diff_days
+    #days_remain = -10 ## for testing purposes
     if days_remain <= 1:
         flag = True
         main_win(days_remain, flag, full_name)
@@ -103,5 +104,5 @@ def main_win(diff_days, flag, full_name):
 
 if __name__ == '__main__':
     logged_user = os.getlogin()
-    test = 'guye'
+    test = 'dady'
     last_pass_set = get_last_pass_set(test)
